@@ -9,7 +9,7 @@ RUN apt-get install -y openssh-server
 
 # Set up configuration for SSH
 RUN mkdir /var/run/sshd
-RUN echo 'root:1234' | chpasswd
+# RUN echo 'root:1234' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 
 # SSH login fix. Otherwise, user is kicked off after login
