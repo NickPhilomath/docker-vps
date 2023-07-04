@@ -1,5 +1,4 @@
-import os
-import platform
+
 from django.shortcuts import render
 from djoser.serializers import UserSerializer, UserCreateSerializer
 from rest_framework import status
@@ -7,15 +6,9 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
-from .models import Server
-
-EXIT_SUCCESS = 0
-EXIT_FALUERE = 1
-# detect platform
-PLATFORM = platform.system()
-PLATFORM_WINDOWS = PLATFORM == 'Windows'
-PLATFORM_LINUX = PLATFORM == 'Linux'
-print(PLATFORM, PLATFORM_WINDOWS)
+from .osfunctions import *
+from .models import Server, DOCKER_CONTANERS_LIMIT
+from .serializers import ServerSerializer, CreateServerSerializer
 
 
 @api_view(['POST'])
@@ -28,18 +21,45 @@ def user(request):
             return Response(status=status.HTTP_200_OK)
         return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-@api_view(['POST'])
-@permission_classes([AllowAny])
+@api_view(['GET', 'POST', 'DELETE'])
+@permission_classes([IsAuthenticated])
 def vps(request):
-    # create virtual server
-    if PLATFORM_WINDOWS:
-        result = os.system('.\scripts\createserver.bat')
-    elif PLATFORM_LINUX:
-        result = os.system('.\scripts\createserver.sh')
-    else:
-        return
+    if request.method == 'GET':
+        servers = Server.objects.filter(user=request.user)
+        serializer = ServerSerializer(servers, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    if request.method == 'POST':
+        create_serializer = CreateServerSerializer(data=request.data)
+        if create_serializer.is_valid():
+            # check for servers limitation
+            num_servers = Server.objects.filter(user=request.user).count()
+            if num_servers >= DOCKER_CONTANERS_LIMIT:
+                return Response({'detail': f'you cannot have more than {DOCKER_CONTANERS_LIMIT} servers'})
+
+            # create vps server
+            if create_server(create_serializer.validated_data, request.user) == EXIT_SUCCESS:
+                return Response(status=status.HTTP_200_OK)
+            return Response({'detail': 'cannot create server'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(create_serializer.errors, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
-    if result == EXIT_SUCCESS:
-        return Response(status=status.HTTP_200_OK)
-    else:
-        return Response({'detail': 'cannot create server'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    if request.method == 'DELETE':
+        container_id = request.GET.get('id')
+        if delete_server(container_id) == EXIT_SUCCESS:
+            try:
+                server = Server.objects.get(container=container_id).delete()
+            except Server.DoesNotExist:
+                return Response({'detail': 'the server with this id does not exists'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(status=status.HTTP_200_OK)
+        return Response({'detail': 'an error occured while deleting server'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            
+
+
+        """
+        {
+            "hostname":"hello",
+            "os":"ub",
+            "os_version":"ub-16",
+            "password":"1234"
+        }
+        """
