@@ -1,4 +1,3 @@
-
 from django.shortcuts import render
 from djoser.serializers import UserSerializer, UserCreateSerializer
 from rest_framework import status
