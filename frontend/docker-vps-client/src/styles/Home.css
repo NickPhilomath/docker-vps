@@ -1,0 +1,13 @@
+.home-intro {
+    background-image: url("../images/home-bg.jpg");
+    background-position: center;
+    background-size: cover;
+    margin-top: 50px;
+
+    .home-intro-text {
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.446);
+        color: white;
+    }
+}

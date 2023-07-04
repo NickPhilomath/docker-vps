@@ -1,9 +1,13 @@
+import { useNavigate } from "react-router-dom";
+
 const Navbar = () => {
+  const navigate = useNavigate();
+
   return (
-    <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
-      <div class="container-fluid">
+    <nav class="navbar navbar-expand-lg border-bottom px-5 shadow bg-light fixed-top d-flex justify-content-between">
+      <div class="container-fluid w-75">
         <a class="navbar-brand" href="#">
-          Navbar
+          VPS NickPhilomath.com
         </a>
         <button
           class="navbar-toggler"
@@ -16,7 +20,7 @@ const Navbar = () => {
         >
           <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+        <div class="collapse navbar-collapse " id="navbarNavDropdown">
           <ul class="navbar-nav">
             <li class="nav-item">
               <a class="nav-link active" aria-current="page" href="#">
@@ -34,13 +38,7 @@ const Navbar = () => {
               </a>
             </li>
             <li class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                href="#"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 Dropdown link
               </a>
               <ul class="dropdown-menu">
@@ -63,6 +61,20 @@ const Navbar = () => {
             </li>
           </ul>
         </div>
+      </div>
+      <div class="col-md-3 text-end">
+        <button
+          type="button"
+          class="btn btn-outline-secondary me-2"
+          onClick={() => {
+            navigate("/login");
+          }}
+        >
+          Login
+        </button>
+        <button type="button" class="btn btn-primary">
+          Sign up
+        </button>
       </div>
     </nav>
   );
