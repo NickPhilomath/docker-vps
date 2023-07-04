@@ -2,7 +2,7 @@
 FROM ubuntu:16.04
 
 # Update the system
-RUN apt-get update && apt-get upgrade -y
+RUN apt-get update && apt-get upgrade -y && apt-get -y install sudo
 
 # Install OpenSSH Server
 RUN apt-get install -y openssh-server
