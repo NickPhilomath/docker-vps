@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import useAuth from "./useAuth";
 import axios from "./axios";
 
-const useRequest = (url) => {
+const useRequest = (url, redirect = true) => {
   const { auth } = useAuth();
   const navigate = useNavigate();
 
@@ -13,12 +13,6 @@ const useRequest = (url) => {
   const [errors, setErrors] = useState({});
   const [errMsg, setErrMsg] = useState("");
 
-  const [pageControl, setPageControl] = useState({
-    count: 0,
-    next: true,
-    previous: true,
-  });
-
   const getHeaders = () => {
     return {
       headers: {
@@ -27,6 +21,14 @@ const useRequest = (url) => {
       },
       // withCredentials: true,
     };
+  };
+
+  const reset = () => {
+    setData({});
+    setErrors({});
+    setErrMsg("");
+    setIsLoading(true);
+    setIsSuccess(false);
   };
 
   const handleError = (err) => {
@@ -43,7 +45,7 @@ const useRequest = (url) => {
       }
     } else if (err.response.status === 401) {
       setErrMsg("Unauthorized");
-      navigate("/logout");
+      if (redirect) navigate("/logout");
     } else if (err.response.status === 403) {
       // createMessage({ type: "danger", content: err.response.data.detail });
       setErrMsg(err.response.data.detail);
@@ -53,56 +55,23 @@ const useRequest = (url) => {
     }
   };
 
-  const handleSuccess = (response) => {
-    setIsSuccess(true);
-    if (response.status === 201 || response.status === 200) {
-      if (response.data) {
-        // createMessage({ type: "success", content: response.data.success });
-      }
-      // closeForm({ reload: true });
-    }
-  };
+  // const handleSuccess = (response) => {
+  //   setIsSuccess(true);
+  //   if (response.status === 201 || response.status === 200) {
+  //     if (response.data) {
+  //       // createMessage({ type: "success", content: response.data.success });
+  //     }
+  //     // closeForm({ reload: true });
+  //   }
+  // };
 
   const setUrl = (u) => {
     url = u;
   };
 
-  const getPage = async (pageNum) => {
-    setErrMsg("");
-    setIsLoading(true);
-    try {
-      const response = await axios.get(`${url}?pagination=True&page=${pageNum}`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "JWT " + auth.accessToken,
-        },
-      });
-      setData(response.data.results);
-      setPageControl({
-        count: response.data.count,
-        next: response.data.next ? true : false,
-        previous: response.data.previous ? true : false,
-      });
-
-      // setHasNextPage(response.data.next ? true : false);
-      setIsLoading(false);
-    } catch (err) {
-      setIsLoading(false);
-      if (!err?.response) {
-        // createMessage({ type: "danger", content: "No Server Response" });
-      } else if (err.response.status === 401) {
-        navigate("/logout");
-      } else if (err.response.status === 403) {
-        // createMessage({ type: "danger", content: err.response.data.detail });
-      } else {
-        // createMessage({ type: "danger", content: err.message });
-      }
-    }
-  };
-
   const get = async () => {
-    setErrMsg("");
-    setIsLoading(true);
+    reset();
+
     try {
       const response = await axios.get(url, getHeaders());
       setIsLoading(false);
@@ -114,34 +83,29 @@ const useRequest = (url) => {
   };
 
   const post = async (data) => {
-    setData({});
-    setErrors({});
-    setErrMsg("");
-    setIsLoading(true);
-    setIsSuccess(false);
+    reset();
 
     try {
       const response = await axios.post(url, JSON.stringify(data), getHeaders());
       setIsLoading(false);
-      handleSuccess(response);
+      setIsSuccess(true);
+      console.log("response*****", response);
       return response.data ? response.data : true;
     } catch (err) {
       setIsLoading(false);
       handleError(err);
+      console.log(err);
     }
-    return;
+    return false;
   };
 
   const put = async (data) => {
-    setErrors({});
-    setErrMsg("");
-    setIsLoading(true);
-    setIsSuccess(false);
+    reset();
 
     try {
       const response = await axios.put(url, JSON.stringify(data), getHeaders());
       setIsLoading(false);
-      handleSuccess(response);
+      // handleSuccess(response);
       // console.log("response###", response);
       return response.data ? response.data : true;
     } catch (err) {
@@ -156,13 +120,10 @@ const useRequest = (url) => {
     errors,
     errMsg,
     isLoading,
-    isSuccess,
     get,
     post,
     put,
-    getPage,
     setUrl,
-    pageControl,
   };
 };
 

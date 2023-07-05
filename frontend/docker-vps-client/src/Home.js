@@ -10,7 +10,7 @@ const Home = () => {
         <div className="home-intro-text text-center p-5">
           <h1 className="display-3 fw-bold mt-5">Virtual servers for everyone!</h1>
           <div class="col-lg-6 mx-auto mb-5">
-            <p class="lead mb-4 fw-bold">Learn Linux for free. Create and deploy linux distros in a second.</p>
+            <p class="lead mb-4 fw-bold">Learn Linux for free. Create and deploy linux distros with one click.</p>
             <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
               <button type="button" class="btn btn-primary btn-lg px-4 gap-3">
                 Primary button

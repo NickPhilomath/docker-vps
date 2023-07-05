@@ -1,29 +1,45 @@
 import "./styles/Login.css";
 
 import { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, redirect } from "react-router-dom";
 
 import { TOKEN_URL, DEFAULT_PAGE } from "./const";
 import useAuth from "./library/hooks/useAuth";
 import useRequest from "./library/hooks/useRequest";
 import JWTDecoder from "./library/functions/JWTDecoder";
 
+import Input from "./library/components/Input";
+import Checkbox from "./library/components/Checkbox";
+
 const Login = () => {
   const { setAuth } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const { errMsg, errors, post, isLoading, isSuccess } = useRequest(TOKEN_URL);
+  const { errMsg, errors, post, isLoading } = useRequest(TOKEN_URL, false);
   const from = location.state?.from?.pathname || DEFAULT_PAGE;
+  // console.log(location.state?.from?.pathname);
 
   const [log, setLog] = useState({
     username: "",
     password: "",
+    remember_me: false,
   });
+
+  const handleChange = ({ currentTarget: input }) => {
+    const newLog = { ...log };
+    if (input.type == "checkbox") {
+      newLog[input.name] = !newLog[input.name];
+    } else {
+      newLog[input.name] = input.value;
+    }
+    setLog(newLog);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const data = await post(log);
-    if (!isSuccess) return;
+    if (!data) return;
+
     const accessToken = data.access;
     const refreshToken = data.refresh;
     const payload = JWTDecoder(accessToken);
@@ -42,21 +58,9 @@ const Login = () => {
       <div class="form-signin w-100 m-auto p-4 shadow border">
         <form onSubmit={handleSubmit}>
           <h1 class="h3 mb-4 fw-normal">Please sign in</h1>
-          <div class="form-floating">
-            <input type="text" class="form-control" id="floatingInput" placeholder="Username" />
-            <label for="floatingInput">Username</label>
-          </div>
-          <div class="form-floating">
-            <input type="password" class="form-control" id="floatingPassword" placeholder="Password" />
-            <label for="floatingPassword">Password</label>
-          </div>
-
-          <div class="form-check text-start my-3">
-            <input class="form-check-input" type="checkbox" value="remember-me" id="flexCheckDefault" />
-            <label class="form-check-label" for="flexCheckDefault">
-              Remember me
-            </label>
-          </div>
+          <Input type="text" inputClass="form-control" name="username" label="Username:" placeholder="myusername" values={[log, "username", errors]} onChange={handleChange} />
+          <Input type="password" className="mt-3" inputClass="form-control" name="username" label="Password:" placeholder="mypassword" values={[log, "password", errors]} onChange={handleChange} />
+          <Checkbox label="Remember me" values={[log, "remember_me"]} onChange={handleChange} />
 
           {isLoading ? (
             <button class="btn btn-primary w-100 py-2 mt-1 mb-3" type="button" disabled="">

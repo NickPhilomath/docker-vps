@@ -5,6 +5,7 @@ import { Route, Routes, Navigate } from "react-router-dom";
 
 import Home from "./Home";
 import Login from "./Login";
+import Logout from "./components/Logout";
 import Unauthorized from "./components/Unauthorized";
 import Missing from "./components/Missing";
 
@@ -15,6 +16,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/logout" element={<Logout />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
         {/* catch all */}
         <Route path="/*" element={<Missing />} />
