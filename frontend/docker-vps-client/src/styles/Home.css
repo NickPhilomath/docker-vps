@@ -1,4 +1,5 @@
 .home-intro {
+    height: 600px;
     background-image: url("../images/home-bg.jpg");
     background-position: center;
     background-size: cover;

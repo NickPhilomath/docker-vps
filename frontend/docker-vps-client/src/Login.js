@@ -45,7 +45,7 @@ const Login = () => {
     const payload = JWTDecoder(accessToken);
     const roles = [payload.role];
     setAuth({ ...log, roles, accessToken });
-    window.localStorage.setItem("auth", JSON.stringify({ username: log.username, roles, accessToken, refreshToken }));
+    if (log.remember_me) window.localStorage.setItem("auth", JSON.stringify({ username: log.username, roles, accessToken, refreshToken }));
     setLog({
       username: "",
       password: "",
@@ -58,8 +58,8 @@ const Login = () => {
       <div class="form-signin w-100 m-auto p-4 shadow border">
         <form onSubmit={handleSubmit}>
           <h1 class="h3 mb-4 fw-normal">Please sign in</h1>
-          <Input type="text" inputClass="form-control" name="username" label="Username:" placeholder="myusername" values={[log, "username", errors]} onChange={handleChange} />
-          <Input type="password" className="mt-3" inputClass="form-control" name="username" label="Password:" placeholder="mypassword" values={[log, "password", errors]} onChange={handleChange} />
+          <Input type="text" inputClass="form-control" name="username" label="Username" placeholder="username" values={[log, "username", errors]} onChange={handleChange} required />
+          <Input type="password" className="mt-3" inputClass="form-control" name="username" label="Password" placeholder="passwd" values={[log, "password", errors]} onChange={handleChange} required />
           <Checkbox label="Remember me" values={[log, "remember_me"]} onChange={handleChange} />
 
           {isLoading ? (
@@ -74,7 +74,18 @@ const Login = () => {
           )}
           {errMsg && <span class="badge w-100 p-2 mb-3 bg-danger-subtle border border-danger-subtle text-danger-emphasis">{errMsg}</span>}
         </form>
-        <a href="#">Forgot password?</a>
+        <p>
+          Need a new account?
+          <a href="#/signup" className="mx-2">
+            Sing up!
+          </a>
+        </p>
+        <p>
+          Forgot password?
+          <a href="#" className="mx-2">
+            we can't help
+          </a>
+        </p>
       </div>
     </div>
   );

@@ -35,7 +35,10 @@ const useRequest = (url, redirect = true) => {
     if (!err?.response) {
       // createMessage({ type: "danger", content: "No Server Response" });
       setErrMsg("No Server Response");
-    } else if (err.response?.status === 400) {
+      return;
+    }
+    // handle 400
+    if (err.response?.status === 400) {
       if (err.response.data) {
         const newErrors = {};
         Object.keys(err.response.data).forEach((s) => {
@@ -43,16 +46,26 @@ const useRequest = (url, redirect = true) => {
         });
         setErrors(newErrors);
       }
-    } else if (err.response.status === 401) {
-      setErrMsg("Unauthorized");
+      return;
+    }
+    // handle 401
+    if (err.response.status === 401) {
+      if (err.response.data && err.response.data.detail) {
+        setErrMsg(err.response.data.detail);
+      } else {
+        setErrMsg("Unauthorized");
+      }
       if (redirect) navigate("/logout");
-    } else if (err.response.status === 403) {
+      return;
+    }
+    // handle 403
+    if (err.response.status === 403) {
       // createMessage({ type: "danger", content: err.response.data.detail });
       setErrMsg(err.response.data.detail);
-    } else {
-      // createMessage({ type: "danger", content: err.message });
-      setErrMsg(err.message);
+      return;
     }
+
+    setErrMsg(err.message);
   };
 
   // const handleSuccess = (response) => {

@@ -12,14 +12,16 @@ from .serializers import ServerSerializer, CreateServerSerializer
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
-def user(request):
+def register(request):
     if request.method == 'POST':
         user_serializer = UserCreateSerializer(data=request.data)
         if user_serializer.is_valid():
             user_serializer.save()
             return Response(status=status.HTTP_200_OK)
         return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
+
+
 @api_view(['GET', 'POST', 'DELETE'])
 @permission_classes([IsAuthenticated])
 def vps(request):

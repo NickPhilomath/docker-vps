@@ -6,18 +6,20 @@ const Home = () => {
   return (
     <>
       <Navbar />
-      <div className="home-intro d-flex justify-content-center align-items-center border-bottom">
-        <div className="home-intro-text text-center p-5">
-          <h1 className="display-3 fw-bold mt-5">Virtual servers for everyone!</h1>
-          <div class="col-lg-6 mx-auto mb-5">
-            <p class="lead mb-4 fw-bold">Learn Linux for free. Create and deploy linux distros with one click.</p>
-            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-              <button type="button" class="btn btn-primary btn-lg px-4 gap-3">
-                Primary button
-              </button>
-              <button type="button" class="btn btn-outline-secondary btn-lg px-4">
-                Secondary
-              </button>
+      <div className="home-intro border-bottom">
+        <div className="home-intro-text text-center p-5 d-flex align-items-center justify-content-center">
+          <div>
+            <h1 className="display-3 fw-bold mt-5">Virtual servers for everyone!</h1>
+            <div class="col-lg-6 mx-auto mb-5">
+              <p class="lead mb-4 fw-bold">Learn Linux for free. Create and deploy linux distros with one click.</p>
+              <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                <button type="button" class="btn btn-primary btn-lg px-4 gap-3">
+                  Signup now
+                </button>
+                <button type="button" class="btn btn-outline-light btn-lg px-4">
+                  Login
+                </button>
+              </div>
             </div>
           </div>
         </div>
