@@ -43,16 +43,7 @@ const Signup = () => {
             <form onSubmit={handleSubmit}>
               <h1 class="h3 mb-4 fw-normal">Create your account</h1>
               <Input type="email" inputClass="form-control" label="Email address:" placeholder="johndoe@example.com" values={[log, "email", errors]} onChange={handleChange} />
-              <Input
-                type="text"
-                className="mt-3"
-                inputClass="form-control"
-                label="Pick a username:"
-                placeholder="doehaveusername"
-                values={[log, "username", errors]}
-                onChange={handleChange}
-                required
-              />
+              <Input type="text" className="mt-3" inputClass="form-control" label="Pick a username:" placeholder="doehasusername" values={[log, "username", errors]} onChange={handleChange} required />
               <Input
                 type="password"
                 className="mt-3 mb-4"

@@ -5,7 +5,7 @@ const Logout = () => {
   const { auth, setAuth } = useAuth();
   if (auth?.accessToken) setAuth({});
   window.localStorage.setItem("auth", "");
-  return <Navigate to={"/login"} />;
+  return <Navigate to={"/"} />;
 };
 
 export default Logout;

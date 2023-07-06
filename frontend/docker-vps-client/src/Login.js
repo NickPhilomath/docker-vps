@@ -1,6 +1,6 @@
 import "./styles/Login.css";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation, redirect } from "react-router-dom";
 
 import { TOKEN_URL, DEFAULT_PAGE } from "./const";
@@ -18,6 +18,11 @@ const Login = () => {
   const { errMsg, errors, post, isLoading } = useRequest(TOKEN_URL, false);
   const from = location.state?.from?.pathname || DEFAULT_PAGE;
   // console.log(location.state?.from?.pathname);
+
+  //  check if user have remembered tokens in storage
+  useEffect(() => {
+    if (window.localStorage.getItem("auth")) navigate(DEFAULT_PAGE);
+  }, []);
 
   const [log, setLog] = useState({
     username: "",
